@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Method__c</fullName>
+    <description>Payment method used for the transaction.</description>
+    <externalId>false</externalId>
+    <label>Payment Method</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Card</fullName>
+                <default>true</default>
+                <label>Card</label>
+            </value>
+            <value>
+                <fullName>UPI</fullName>
+                <default>false</default>
+                <label>UPI</label>
+            </value>
+            <value>
+                <fullName>Net Banking</fullName>
+                <default>false</default>
+                <label>Net Banking</label>
+            </value>
+            <value>
+                <fullName>Fee Waiver</fullName>
+                <default>false</default>
+                <label>Fee Waiver</label>
+            </value>
+            <value>
+                <fullName>Cash</fullName>
+                <default>false</default>
+                <label>Cash</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
+

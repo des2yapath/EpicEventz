@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Secure_QR_Token__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Cryptographic or unique token encoded in the QR code for door check-in validation.</description>
+    <externalId>true</externalId>
+    <label>Secure QR Token</label>
+    <length>128</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

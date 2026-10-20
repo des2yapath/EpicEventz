@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Sellable__c</fullName>
+    <description>Evaluates whether this tier is currently active, has seats available, and is within the sales window.</description>
+    <externalId>false</externalId>
+    <formula>AND(
+    Is_Active__c,
+    Available__c &gt; 0,
+    OR(ISBLANK(Sales_Open_At__c), Sales_Open_At__c &lt;= NOW()),
+    OR(ISBLANK(Sales_Close_At__c), Sales_Close_At__c &gt;= NOW())
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Is Sellable</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>
+

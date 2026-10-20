@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Event_Category__c</fullName>
+    <description>Category of the event project.</description>
+    <externalId>false</externalId>
+    <label>Event Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Live Concert</fullName>
+                <default>false</default>
+                <label>Live Concert</label>
+            </value>
+            <value>
+                <fullName>Standup Comedy</fullName>
+                <default>false</default>
+                <label>Standup Comedy</label>
+            </value>
+            <value>
+                <fullName>Destination Wedding</fullName>
+                <default>false</default>
+                <label>Destination Wedding</label>
+            </value>
+            <value>
+                <fullName>Tech Conference</fullName>
+                <default>false</default>
+                <label>Tech Conference</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

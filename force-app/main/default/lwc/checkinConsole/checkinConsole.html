@@ -1,0 +1,124 @@
+<template>
+    <lightning-card title="EpicEventz Door Check-In Console" icon-name="custom:custom53">
+        <div class="slds-p-around_medium console-container">
+            <!-- Instructions and Header -->
+            <div class="slds-m-bottom_medium console-header">
+                <p class="slds-text-body_regular slds-text-color_weak">
+                    Scan or enter an attendee's Secure QR Token to validate entry, verify seating, and record attendance in real time.
+                </p>
+            </div>
+
+            <!-- Check-in Action Bar -->
+            <div class="slds-grid slds-gutters slds-grid_vertical-align-end slds-m-bottom_large action-bar">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_8-of-12">
+                    <lightning-input
+                        label="Scan / Enter Pass Token"
+                        placeholder="Paste or scan 32-character Secure QR Token..."
+                        value={tokenInput}
+                        onchange={handleTokenChange}
+                        oncommit={handleCheckin}
+                        required>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12 slds-m-top_small">
+                    <lightning-button
+                        label="Check In Attendee"
+                        variant="brand"
+                        icon-name="utility:check"
+                        onclick={handleCheckin}
+                        disabled={isProcessing}
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button
+                        label="Clear"
+                        variant="neutral"
+                        onclick={handleClear}>
+                    </lightning-button>
+                </div>
+            </div>
+
+            <!-- Spinner -->
+            <template lwc:if={isProcessing}>
+                <div class="slds-is-relative slds-p-around_large">
+                    <lightning-spinner alternative-text="Validating entry token..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Result Feedback Notification -->
+            <template lwc:if={lastResult}>
+                <div class="slds-m-bottom_large" aria-live="assertive">
+                    <template lwc:if={lastResult.isSuccess}>
+                        <div class="slds-notify slds-notify_alert slds-theme_success slds-box slds-box_small slds-theme_alert-texture result-banner" role="status">
+                            <span class="slds-assistive-text">Success</span>
+                            <lightning-icon icon-name="utility:success" size="small" variant="inverse" class="slds-m-right_small"></lightning-icon>
+                            <div>
+                                <h2 class="slds-text-heading_small slds-text-color_inverse"><strong>Access Granted!</strong></h2>
+                                <p class="slds-m-top_xx-small slds-text-color_inverse">{lastResult.message}</p>
+                                <p class="slds-m-top_xx-small slds-text-color_inverse"><strong>Seat / Table:</strong> {lastResult.seatAssignment}</p>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-notify slds-notify_alert slds-theme_error slds-box slds-box_small slds-theme_alert-texture result-banner" role="alert">
+                            <span class="slds-assistive-text">Error</span>
+                            <lightning-icon icon-name="utility:error" size="small" variant="inverse" class="slds-m-right_small"></lightning-icon>
+                            <div>
+                                <h2 class="slds-text-heading_small slds-text-color_inverse"><strong>Entry Refused</strong></h2>
+                                <p class="slds-m-top_xx-small slds-text-color_inverse">{lastResult.message}</p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Recent Passes Table -->
+            <div class="recent-passes-section slds-m-top_large">
+                <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                    <h3 class="slds-text-heading_small">Recent Check-In Activity</h3>
+                    <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" onclick={refreshList}></lightning-button-icon>
+                </div>
+
+                <template lwc:if={hasRecentPasses}>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Recent check-in passes">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col"><div class="slds-truncate" title="Pass #">Pass #</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Attendee">Attendee</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Tier">Tier</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Seat">Seat</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Status">Status</div></th>
+                                <th scope="col"><div class="slds-truncate" title="Action">Action</div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={recentPasses} for:item="pass">
+                                <tr key={pass.id}>
+                                    <th scope="row"><div class="slds-truncate">{pass.passNumber}</div></th>
+                                    <td><div class="slds-truncate"><strong>{pass.attendeeName}</strong></div></td>
+                                    <td><div class="slds-truncate">{pass.tierName}</div></td>
+                                    <td><div class="slds-truncate">{pass.seatAssignment}</div></td>
+                                    <td>
+                                        <span class={pass.badgeClass}>{pass.status}</span>
+                                    </td>
+                                    <td>
+                                        <lightning-button-icon
+                                            icon-name="utility:forward"
+                                            alternative-text="Load Token"
+                                            title="Load Token into Scanner"
+                                            data-token={pass.token}
+                                            onclick={handleLoadToken}>
+                                        </lightning-button-icon>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+                <template lwc:else>
+                    <p class="slds-text-body_regular slds-text-color_weak slds-p-around_medium">No recent passes recorded yet.</p>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>
+

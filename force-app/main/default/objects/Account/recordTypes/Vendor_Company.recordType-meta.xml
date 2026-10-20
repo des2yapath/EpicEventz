@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Vendor_Company</fullName>
+    <active>true</active>
+    <description>Vendor companies providing event services</description>
+    <label>Vendor Company</label>
+</RecordType>

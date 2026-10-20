@@ -1,0 +1,254 @@
+<template>
+    <lightning-card title="Event Explorer" icon-name="standard:event">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+
+            <!-- ─── Filter Bar ─────────────────────────────────────────────── -->
+            <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                <div class="slds-grid slds-wrap slds-gutters slds-grid_vertical-align-end">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-12 slds-m-bottom_small">
+                        <lightning-input
+                            label="Search Events"
+                            type="search"
+                            value={searchTerm}
+                            placeholder="Name, venue or description..."
+                            onchange={handleSearchChange}>
+                        </lightning-input>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-m-bottom_small">
+                        <lightning-combobox
+                            label="Category"
+                            value={selectedCategory}
+                            options={categoryOptions}
+                            onchange={handleCategoryChange}>
+                        </lightning-combobox>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-m-bottom_small">
+                        <lightning-combobox
+                            label="City"
+                            value={selectedCity}
+                            options={cityOptions}
+                            onchange={handleCityChange}>
+                        </lightning-combobox>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-m-bottom_small">
+                        <lightning-input
+                            label="From Date"
+                            type="date"
+                            value={fromDate}
+                            onchange={handleFromDateChange}>
+                        </lightning-input>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-m-bottom_small">
+                        <lightning-input
+                            label="To Date"
+                            type="date"
+                            value={toDate}
+                            onchange={handleToDateChange}>
+                        </lightning-input>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-12 slds-m-bottom_small slds-text-align_right">
+                        <lightning-button
+                            label="Clear"
+                            title="Clear all filters"
+                            onclick={handleClearFilters}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── State: Loading ─────────────────────────────────────────── -->
+            <template lwc:if={isLoading}>
+                <div class="loading-container slds-p-vertical_xx-large slds-text-align_center">
+                    <lightning-spinner alternative-text="Loading events..." size="medium"></lightning-spinner>
+                    <p class="slds-text-body_regular slds-m-top_small slds-text-color_weak">Discovering upcoming events...</p>
+                </div>
+            </template>
+
+            <!-- ─── State: Error ───────────────────────────────────────────── -->
+            <template lwc:elseif={errorMessage}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-vertical_medium" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <lightning-icon icon-name="utility:error" size="small" variant="inverse" class="slds-m-right_x-small"></lightning-icon>
+                    <h2>{errorMessage}</h2>
+                    <div class="slds-notify__close slds-m-left_medium">
+                        <lightning-button-icon icon-name="utility:refresh" alternative-text="Try again" variant="bare-inverse" onclick={handleTryAgain}></lightning-button-icon>
+                    </div>
+                </div>
+                <div class="slds-text-align_center slds-m-top_small">
+                    <lightning-button label="Try Again" variant="neutral" onclick={handleTryAgain}></lightning-button>
+                </div>
+            </template>
+
+            <!-- ─── State: Empty ───────────────────────────────────────────── -->
+            <template lwc:elseif={isEmpty}>
+                <div class="empty-state slds-text-align_center slds-p-vertical_xx-large slds-box slds-theme_default">
+                    <lightning-icon icon-name="utility:search" size="large" variant="warning"></lightning-icon>
+                    <h3 class="slds-text-heading_medium slds-m-top_medium">No events match your filters</h3>
+                    <p class="slds-text-body_regular slds-text-color_weak slds-m-top_x-small">
+                        Try broadening your search term or resetting category and date ranges.
+                    </p>
+                    <div class="slds-m-top_medium">
+                        <lightning-button label="Clear Filters" variant="brand" onclick={handleClearFilters}></lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- ─── State: Populated ───────────────────────────────────────── -->
+            <template lwc:else>
+                <!-- Accessible Results Counter -->
+                <div class="slds-m-bottom_small" aria-live="polite">
+                    <span class="slds-badge slds-theme_light result-badge">{resultCountLabel}</span>
+                </div>
+
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <!-- Events Cards Column -->
+                    <div class={cardsColumnClass}>
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <template for:each={eventCards} for:item="card">
+                                <div key={card.id} class="slds-col slds-size_1-of-1 slds-m-bottom_medium">
+                                    <article 
+                                        class={card.cardClass}
+                                        tabindex="0"
+                                        role="button"
+                                        aria-label={card.ariaLabel}
+                                        onclick={handleSelectEvent}
+                                        onkeydown={handleCardKeyDown}
+                                        data-id={card.id}>
+                                        
+                                        <!-- Thumbnail -->
+                                        <template lwc:if={card.bannerUrl}>
+                                            <div class="card-thumbnail-wrapper">
+                                                <img src={card.bannerUrl} alt={card.name} class="card-thumbnail" />
+                                            </div>
+                                        </template>
+
+                                        <div class="slds-p-around_medium card-body">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_xx-small">
+                                                <span class="category-tag">{card.category}</span>
+                                                <template lwc:if={card.isNearlySoldOut}>
+                                                    <span class="slds-badge slds-theme_warning" aria-label="Almost sold out">Almost sold out</span>
+                                                </template>
+                                            </div>
+
+                                            <h3 class="slds-text-heading_small event-title">{card.name}</h3>
+
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-m-top_x-small event-meta">
+                                                <lightning-icon icon-name="utility:event" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                <span>{card.formattedDate}</span>
+                                            </div>
+
+                                            <div class="slds-grid slds-grid_vertical-align-center slds-m-top_xx-small event-meta">
+                                                <lightning-icon icon-name="utility:checkin" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                                                <span>{card.venueDisplay}</span>
+                                            </div>
+
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-top_medium card-footer">
+                                                <div class="price-indicator">
+                                                    <template lwc:if={card.isSoldOut}>
+                                                        <span class="sold-out-text">Sold out</span>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <span class="from-price">From ${card.formattedPrice}</span>
+                                                    </template>
+                                                </div>
+                                                <div class="seats-indicator">
+                                                    <span class="seats-text">{card.seatsAvailable} seats left</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Detail Column -->
+                    <template lwc:if={selectedEventDetail}>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_5-of-12 slds-m-bottom_medium">
+                            <div class="slds-box slds-theme_default detail-panel">
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_small">
+                                    <h2 class="slds-text-heading_medium">{selectedEventDetail.header.name}</h2>
+                                    <lightning-button-icon icon-name="utility:close" alternative-text="Close details" variant="bare" onclick={handleCloseDetail}></lightning-button-icon>
+                                </div>
+
+                                <p class="slds-text-body_regular slds-m-bottom_medium description-text">
+                                    {selectedEventDetail.description}
+                                </p>
+
+                                <div class="detail-section slds-m-bottom_small">
+                                    <h4 class="section-heading">Venue & Location</h4>
+                                    <p class="meta-line"><strong>Venue:</strong> {selectedEventDetail.header.venueName}</p>
+                                    <template lwc:if={selectedEventDetail.venueAddress}>
+                                        <p class="meta-line"><strong>Address:</strong> {selectedEventDetail.venueAddress}</p>
+                                    </template>
+                                    <template lwc:if={selectedEventDetail.accessibilityNotes}>
+                                        <p class="meta-line"><strong>Accessibility:</strong> {selectedEventDetail.accessibilityNotes}</p>
+                                    </template>
+                                </div>
+
+                                <template lwc:if={selectedEventDetail.refundPolicy}>
+                                    <div class="detail-section slds-m-bottom_small">
+                                        <h4 class="section-heading">Refund Policy</h4>
+                                        <p class="meta-line">{selectedEventDetail.refundPolicy}</p>
+                                    </div>
+                                </template>
+
+                                <!-- Ticket Tiers Table -->
+                                <div class="detail-section slds-m-top_medium">
+                                    <h4 class="section-heading slds-m-bottom_x-small">Available Ticket Tiers</h4>
+                                    
+                                    <div class="slds-table--header-fixed_container">
+                                        <table class="slds-table slds-table_bordered slds-table_cell-buffer" aria-label="Ticket tiers pricing and availability">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th scope="col"><div class="slds-truncate" title="Tier">Tier</div></th>
+                                                    <th scope="col"><div class="slds-truncate" title="Price">Price</div></th>
+                                                    <th scope="col"><div class="slds-truncate" title="Seats">Seats Left</div></th>
+                                                    <th scope="col"><div class="slds-truncate" title="Action">Action</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={selectedEventDetail.tiers} for:item="tier">
+                                                    <tr key={tier.id}>
+                                                        <th scope="row" data-label="Tier">
+                                                            <div class="slds-truncate tier-name-cell">
+                                                                <strong>{tier.name}</strong>
+                                                                <template lwc:if={tier.statusBadge}>
+                                                                    <span class={tier.badgeClass} aria-label={tier.badgeText}>{tier.badgeText}</span>
+                                                                </template>
+                                                            </div>
+                                                        </th>
+                                                        <td data-label="Price">
+                                                            <div>${tier.price}</div>
+                                                        </td>
+                                                        <td data-label="Seats Left">
+                                                            <div>{tier.available}</div>
+                                                        </td>
+                                                        <td data-label="Action">
+                                                            <lightning-button
+                                                                label="Buy"
+                                                                disabled
+                                                                title="Checkout coming next"
+                                                                variant="neutral">
+                                                            </lightning-button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
+

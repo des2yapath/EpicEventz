@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Event_Project__c</fullName>
+    <description>Master operational event project for this tier.</description>
+    <externalId>false</externalId>
+    <label>Event Project</label>
+    <referenceTo>Event_Project__c</referenceTo>
+    <relationshipLabel>Ticket Tiers</relationshipLabel>
+    <relationshipName>Ticket_Tiers</relationshipName>
+    <relationshipOrder>1</relationshipOrder>
+    <reparentableMasterDetail>true</reparentableMasterDetail>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

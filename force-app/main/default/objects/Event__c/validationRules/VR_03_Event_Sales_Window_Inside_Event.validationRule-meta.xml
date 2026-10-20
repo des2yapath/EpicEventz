@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_03_Event_Sales_Window_Inside_Event</fullName>
+    <active>true</active>
+    <description>Ticket sales must open before start and close before end.</description>
+    <errorConditionFormula>OR(
+    AND(NOT(ISBLANK(Sales_Open_At__c)), NOT(ISBLANK(Start_At__c)), Sales_Open_At__c &gt; Start_At__c),
+    AND(NOT(ISBLANK(Sales_Close_At__c)), NOT(ISBLANK(End_At__c)), Sales_Close_At__c &gt; End_At__c)
+)</errorConditionFormula>
+    <errorDisplayField>Sales_Open_At__c</errorDisplayField>
+    <errorMessage>Ticket sales must open and close inside the event itself — stop selling once the doors are open.</errorMessage>
+</ValidationRule>
+

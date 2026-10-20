@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tickets_Sold__c</fullName>
+    <description>Count of active tickets sold for this event.</description>
+    <label>Tickets Sold</label>
+    <summaryFilterItems>
+        <field>Ticket__c.Status__c</field>
+        <operation>notEqual</operation>
+        <value>Cancelled</value>
+    </summaryFilterItems>
+    <summaryFilterItems>
+        <field>Ticket__c.Status__c</field>
+        <operation>notEqual</operation>
+        <value>Refunded</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Ticket__c.Event__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>
+

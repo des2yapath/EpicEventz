@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Actionable_Issue_Tag__c</fullName>
+    <description>Extracted issue tag or operational category requiring review.</description>
+    <externalId>false</externalId>
+    <label>Actionable Issue Tag</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
+

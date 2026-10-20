@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Net_Organizer_Payout__c</fullName>
+    <description>Calculated net payout to the organizer after commission.</description>
+    <externalId>false</externalId>
+    <formula>Gross_Ticket_Revenue__c * (1 - (BLANKVALUE(Host_Account__r.Commission_Rate__c, 0) / 100))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Net Organizer Payout</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_01_Event_End_After_Start</fullName>
+    <active>true</active>
+    <description>An event must finish after it starts.</description>
+    <errorConditionFormula>End_At__c &lt;= Start_At__c</errorConditionFormula>
+    <errorDisplayField>End_At__c</errorDisplayField>
+    <errorMessage>An event must finish after it starts. Check the start and end times.</errorMessage>
+</ValidationRule>
+

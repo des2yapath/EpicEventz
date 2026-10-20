@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VR_02_Event_Capacity_Positive</fullName>
+    <active>true</active>
+    <description>Capacity must be at least 1.</description>
+    <errorConditionFormula>Capacity__c &lt;= 0</errorConditionFormula>
+    <errorDisplayField>Capacity__c</errorDisplayField>
+    <errorMessage>Capacity must be at least 1 — you can&apos;t sell nothing.</errorMessage>
+</ValidationRule>
+

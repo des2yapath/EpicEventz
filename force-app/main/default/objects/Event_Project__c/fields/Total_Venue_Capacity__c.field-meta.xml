@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Venue_Capacity__c</fullName>
+    <description>Total capacity of the venue selected for this event.</description>
+    <externalId>false</externalId>
+    <label>Total Venue Capacity</label>
+    <precision>6</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

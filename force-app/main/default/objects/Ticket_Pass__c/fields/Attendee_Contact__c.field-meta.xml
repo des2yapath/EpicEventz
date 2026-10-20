@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Attendee_Contact__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Attendee contact holding this pass.</description>
+    <externalId>false</externalId>
+    <label>Attendee Contact</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Ticket Passes</relationshipLabel>
+    <relationshipName>Ticket_Passes</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Lookup</type>
+</CustomField>
